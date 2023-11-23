@@ -1,0 +1,16 @@
+FROM python:3.10
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY pdf_dataset .
+COPY slides_dataset .
+
+RUN python train.py --pdf_dataset pdf_dataset --slides_dataset slides_dataset --output_model model.h5
+
+COPY serve.py .
+EXPOSE 8000
+
+CMD ["python", "serve.py", "--model", "model.h5"]
